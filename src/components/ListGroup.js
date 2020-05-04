@@ -9,7 +9,7 @@ class ListGroup extends Component {
       items.push(
         <li key={i++} className="list-group-item d-flex justify-content-between align-items-center">
           {property.replace(/([A-Z])/g, ' $1').trim()}
-          <span className="badge badge-primary badge-pill">{obj[property]}</span>
+          <span className="badge badge-primary badge-pill">{obj[property].toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}</span>
         </li>
       )
     }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './App.scss'
-// import CardList from '../components/CardList'
+import CardList from '../components/CardList'
 import Card from '../components/Card'
 import ListGroup from '../components/ListGroup'
 import Top10 from '../components/Top10'
@@ -15,27 +15,44 @@ class App extends Component {
     super()
     this.state = {
       world: [],
-      countries: []
+      countries: [],
     }
   }
 
   componentDidMount() {
-    const url = 'https://api.covid19api.com/summary';
+    this.getData();
+  }
 
-    fetch(url)
+  getData = () => {
+   fetch('https://api.covid19api.com/summary')
       .then(response => response.json())
       .then(data => this.setState({world: data['Global'], countries: data['Countries']}));
   }
 
   render() {
+        console.log('Hi');
     const { world, countries } = this.state;
-    return (
-      <div>
-        <div className="App">
-          <div className="container">
-            <div className="jumbotron">
-              <h1>Covid Updates</h1>
-            </div>
+    let france = {};
+    let uk = {};
+    let stats = null;
+
+    if(world && countries) {
+      france = countries.filter(country => country['Slug'].includes('france'));
+      uk = countries.filter(country => country['Slug'].includes('united-kingdom'));
+      france = france[0];
+      uk = uk[0];
+      if(france){
+        france.icon = 'frog';
+      }
+      if(uk){
+        uk.icon = 'sheep';
+      }
+      let myCountries = [];
+      myCountries.push(france);
+      myCountries.push(uk);
+
+      stats = (
+          <div>
             <Card
               header="Global Stats"
               cardStyle="mb-4"
@@ -43,6 +60,7 @@ class App extends Component {
               <p><FontAwesomeIcon icon={['fad', 'globe-europe']} size="6x" /></p>
               <ListGroup list={world} />
             </Card>
+            <CardList data={myCountries} />
             <div className="row">
               <div className="col-md-6">
                 <Card
@@ -76,7 +94,7 @@ class App extends Component {
                   header="Top 10 Most Deaths Today"
                   cardStyle="mb-4"
                 >
-                  <p><FontAwesomeIcon icon={['fad', 'tombstone-alt']} size="6x" /></p>
+                  <p><FontAwesomeIcon icon={['fad', 'tombstone']} size="6x" /></p>
                   <Top10 list={countries} value={'NewDeaths'} />
                 </Card>
               </div>
@@ -99,6 +117,18 @@ class App extends Component {
                 </Card>
               </div>
             </div>
+          </div>
+        )
+    }
+
+    return (
+      <div>
+        <div className="App">
+          <div className="container">
+            <div className="jumbotron">
+              <h1>Covid Updates</h1>
+            </div>
+              {stats}
           </div>
         </div>
       </div>

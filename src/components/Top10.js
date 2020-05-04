@@ -15,7 +15,7 @@ class Top10 extends Component {
               return(
                 <li key={i++} className="list-group-item d-flex justify-content-between align-items-center">
                   {i}. {item['Country']}
-                  <span className="badge badge-primary badge-pill">{item[value]}</span>
+                  <span className="badge badge-primary badge-pill">{item[value].toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}</span>
                 </li>
               )
             }
